@@ -17,7 +17,7 @@ export default function UserDetails({user, open, setOpen}) {
           transform             : 'translate(-50%, -50%)',
           borderRadius          : 15
         }
-      };
+      }
 
     return (
         <>
