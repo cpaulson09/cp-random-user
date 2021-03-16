@@ -1,25 +1,54 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState, useEffect} from 'react'
+import UserDetails from './components/UserDetails';
+const axios = require('axios')
 
 function App() {
+  const [users, setUsers] = useState([])
+  const [open, setOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState({})
+
+  useEffect( () => {
+    async function fetch(){
+      await axios.get('https://cons-api.herokuapp.com/users')
+      .then(response => {
+        console.log(response)
+        setUsers(response.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+    fetch()
+  }, [])
+
+  const handleUser = (user) => {
+    setCurrentUser(user)
+    setOpen(true)
+  }
+
+  if (users.length === 0){
+    return (
+      <h1>Loading Users...</h1>
+    )
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>User List</h1>
+        {
+          users.map(user => {
+            return (
+              <p key={user.name.first} onClick={() => handleUser(user)} style={{padding: 15, borderRadius: 15}}>
+                <span style={{backgroundColor: '#282c34', color: '#61dafb', cursor: 'pointer', padding: "10px 20px 10px 20px", borderRadius: 15, fontSize: 14}}>
+                  {user.name.first} {user.name.last}  |  {user.email}  |  {user.location.city}, {user.location.country}
+                </span>
+              </p>
+            )
+          })
+        }
+      <UserDetails user={currentUser} open={open} setOpen={setOpen} /> 
     </div>
-  );
+  )
 }
 
 export default App;
