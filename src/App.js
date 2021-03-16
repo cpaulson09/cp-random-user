@@ -6,13 +6,12 @@ const axios = require('axios')
 function App() {
   const [users, setUsers] = useState([])
   const [open, setOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState({})
+  const [currentUser, setCurrentUser] = useState()
 
   useEffect( () => {
     async function fetch(){
       await axios.get('https://cons-api.herokuapp.com/users')
       .then(response => {
-        console.log(response)
         setUsers(response.data)
       })
       .catch(err => {
@@ -21,6 +20,10 @@ function App() {
     }
     fetch()
   }, [])
+
+  useEffect(() => {
+  
+  }, [currentUser])
 
   const handleUser = (user) => {
     setCurrentUser(user)
@@ -38,15 +41,15 @@ function App() {
         {
           users.map(user => {
             return (
-              <p key={user.name.first} onClick={() => handleUser(user)} style={{padding: 15, borderRadius: 15}}>
-                <span style={{backgroundColor: '#282c34', color: '#61dafb', cursor: 'pointer', padding: "10px 20px 10px 20px", borderRadius: 15, fontSize: 14}}>
-                  {user.name.first} {user.name.last}  |  {user.email}  |  {user.location.city}, {user.location.country}
+              <p key={user.name.first} onClick={() => { handleUser(user)}} style={{ padding: 15 }}>
+                <span style={{color: '#61dafb', backgroundColor: '#282c34', padding: '10px 20px 10px 20px', borderRadius: 15, cursor:'pointer'}}>
+                {user.name.first} {user.name.last} | {user.email} | {user.location.city}, {user.location.country}
                 </span>
               </p>
             )
           })
         }
-      <UserDetails user={currentUser} open={open} setOpen={setOpen} /> 
+      <UserDetails user={currentUser} open={open} setOpen={setOpen} />
     </div>
   )
 }
